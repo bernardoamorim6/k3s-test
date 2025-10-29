@@ -1,3 +1,8 @@
+## Install argo cd yaml file:
+```bash
+curl -o argocd-install.yaml https://raw.githubusercontent.com/argoproj/argo-cd/v2.9.3/manifests/install.yaml
+```
+
 
 ## Destroy eveything:
 ```bash

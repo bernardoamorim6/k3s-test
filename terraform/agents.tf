@@ -1,3 +1,8 @@
+# What agents do:
+#   • Run workloads (your actual applications)
+#   • Report status back to the server
+#   • Execute commands from the control plane
+
 resource "docker_container" "k3s_agent" {
   count = var.agent_count
 
@@ -11,7 +16,9 @@ resource "docker_container" "k3s_agent" {
   ]
 
   env = [
+    # K3S_URL : Address of the server (using Docker network DNS)
     "K3S_URL=https://${docker_container.k3s_server[0].name}:6443",
+    # K3S_TOKEN : Must match the server's token
     "K3S_TOKEN=my-super-secret-token"
   ]
 
@@ -22,6 +29,6 @@ resource "docker_container" "k3s_agent" {
   volumes {
     container_path = "/var/lib/rancher/k3s"
   }
-
+  # Ensures server exists before agents try to join
   depends_on = [docker_container.k3s_server]
 }

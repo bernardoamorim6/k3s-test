@@ -4,22 +4,42 @@ resource "docker_container" "k3s_server" {
   name  = "${var.cluster_name}-server-${count.index}"
   image = docker_image.k3s.image_id
 
+  # • Gives the container full access to the host's devices
+  # • Required because k3s needs to:
+  # • Create network interfaces
+  # • Mount filesystems
+  # • Manage other containers (pods)
+  # • Think of it like "admin mode" for the container
   privileged = true
 
+
+
+
+  # • Runs k3s in "server" mode (control plane)
   command = [
     "server",
+    # • --disable=traefik : Disables the default ingress controller (we don't need it yet)
     "--disable=traefik",
+    # • --tls-san=127.0.0.1 : Adds localhost to the TLS certificate (so we can connect from our machine)
     "--tls-san=127.0.0.1",
+    "--tls-san=172.20.0.0",
+    # • --bind-address=0.0.0.0 : Listen on all interfaces
     "--bind-address=0.0.0.0"
   ]
 
   env = [
+    # Shared secret that agents use to join the cluster (like a password)
     "K3S_TOKEN=my-super-secret-token",
+    #  Where to write the kubeconfig file
     "K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml",
+    # • K3S_KUBECONFIG_MODE=666 : 
     "K3S_KUBECONFIG_MODE=666"
   ]
 
   ports {
+    # 6443 is the Kubernetes API port
+    # We map it to our host so we can run kubectl commands
+    # This is how your kubectl talks to the cluster
     internal = 6443
     external = var.api_port + count.index
   }
@@ -28,6 +48,11 @@ resource "docker_container" "k3s_server" {
     name = docker_network.k3s_network.name
   }
 
+
+  # • Maps ./output on your machine to /output in the container
+  # • This is how the kubeconfig file gets to your machine
+  # • The container writes to /output/kubeconfig.yaml
+  # • You read it from ./output/kubeconfig.yaml
   volumes {
     host_path      = "${path.cwd}/output"
     container_path = "/output"

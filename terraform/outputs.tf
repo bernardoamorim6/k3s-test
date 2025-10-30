@@ -45,3 +45,9 @@ output "argocd_access_info" {
        Password: (from command above)
   EOT
 }
+
+# Output the registry URL
+output "registry_url" {
+  description = "Local Docker Registry URL"
+  value       = "localhost:5000 (internal: local-registry:5000)"
+}

@@ -1,0 +1,15 @@
+mirrors:
+  "local-registry:5000":
+    endpoint:
+      - "http://local-registry:5000"
+  "localhost:5000":
+    endpoint:
+      - "http://local-registry:5000"
+
+configs:
+  "local-registry:5000":
+    tls:
+      insecure_skip_verify: true
+  "localhost:5000":
+    tls:
+      insecure_skip_verify: true

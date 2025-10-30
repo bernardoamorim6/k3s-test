@@ -61,4 +61,10 @@ resource "docker_container" "k3s_server" {
   volumes {
     container_path = "/var/lib/rancher/k3s"
   }
+
+  volumes {
+    host_path      = "${path.cwd}/registries.yaml"
+    container_path = "/etc/rancher/k3s/registries.yaml"
+    read_only      = true
+  }
 }

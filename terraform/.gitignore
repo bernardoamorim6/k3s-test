@@ -20,6 +20,8 @@ override.tf.json
 .DS_Store
 
 README.md
+
 terraform/output/
 terraform/.terraform/
 terraform/*.tfstate*
+terraform/output/kubeconfig.yaml

@@ -19,6 +19,7 @@ override.tf.json
 *~
 .DS_Store
 
-README.mdterraform/output/
+README.md
+terraform/output/
 terraform/.terraform/
 terraform/*.tfstate*

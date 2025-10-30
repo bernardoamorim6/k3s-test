@@ -51,3 +51,22 @@ output "registry_url" {
   description = "Local Docker Registry URL"
   value       = "localhost:5000 (internal: local-registry:5000)"
 }
+
+
+output "argo_workflows_access_info" {
+  value = <<-EOT
+    Argo Workflows has been installed!
+    
+    To access the Argo Workflows UI:
+    1. Port-forward:
+       kubectl port-forward svc/argo-server -n argo 2746:2746
+       Then open: http://localhost:2746
+    
+    To submit workflows from CLI:
+       # Install argo CLI first (optional)
+       # Linux: curl -sLO https://github.com/argoproj/argo-workflows/releases/download/v3.5.12/argo-linux-amd64.gz
+       # gunzip argo-linux-amd64.gz
+       # chmod +x argo-linux-amd64
+       # sudo mv argo-linux-amd64 /usr/local/bin/argo
+  EOT
+}

@@ -31,7 +31,7 @@ resource "null_resource" "wait_for_kubeconfig" {
     EOT
   }
 
-  depends_on = [docker_container.k3s_server]
+  depends_on = [docker_container.k3s_server, null_resource.fix_kubeconfig]
 
   triggers = {
     server_id = docker_container.k3s_server[0].id

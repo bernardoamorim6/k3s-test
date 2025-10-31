@@ -32,4 +32,8 @@ resource "null_resource" "wait_for_kubeconfig" {
   }
 
   depends_on = [docker_container.k3s_server]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }

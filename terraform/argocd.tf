@@ -24,6 +24,10 @@ resource "null_resource" "argocd_namespace" {
     docker_container.k3s_agent,
     null_resource.wait_for_kubeconfig
   ]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }
 
 # Why null_resource with local-exec?
@@ -53,4 +57,8 @@ resource "null_resource" "install_argocd" {
   }
 
   depends_on = [null_resource.argocd_namespace]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }

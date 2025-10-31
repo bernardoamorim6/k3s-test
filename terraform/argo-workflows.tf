@@ -16,6 +16,10 @@ resource "null_resource" "argo_namespace" {
     docker_container.k3s_agent,
     null_resource.wait_for_kubeconfig
   ]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }
 
 # Step 2: Install Argo Workflows
@@ -39,6 +43,10 @@ resource "null_resource" "install_argo_workflows" {
   }
 
   depends_on = [null_resource.argo_namespace]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }
 
 # Step 3: Patch server for insecure mode AND fix readiness probe
@@ -72,6 +80,10 @@ resource "null_resource" "patch_argo_server" {
   }
 
   depends_on = [null_resource.install_argo_workflows]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }
 
 # Step 4: Create ServiceAccount for workflows
@@ -120,4 +132,8 @@ EOF
   }
 
   depends_on = [null_resource.patch_argo_server]
+
+  triggers = {
+    server_id = docker_container.k3s_server[0].id
+  }
 }

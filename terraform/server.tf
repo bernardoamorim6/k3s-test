@@ -28,8 +28,10 @@ resource "docker_container" "k3s_server" {
     # • --tls-san=127.0.0.1 : Adds localhost to the TLS certificate (so we can connect from our machine)
     "--tls-san=127.0.0.1",
     "--tls-san=172.20.0.10",
+    "--tls-san=0.0.0.0",
     # • --bind-address=0.0.0.0 : Listen on all interfaces
-    "--bind-address=0.0.0.0"
+    "--bind-address=0.0.0.0",
+    "--advertise-address=127.0.0.1"
   ]
 
   env = [
@@ -37,8 +39,10 @@ resource "docker_container" "k3s_server" {
     "K3S_TOKEN=my-super-secret-token",
     #  Where to write the kubeconfig file
     "K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml",
-    # • K3S_KUBECONFIG_MODE=666 : 
-    "K3S_KUBECONFIG_MODE=666"
+    # • K3S_KUBECONFIG_MODE=666 :  Sets the permissions on the kubeconfig file
+    "K3S_KUBECONFIG_MODE=666",
+    # • K3S_ADVERTISE_ADDRESS=127.0.0.1 : tells agents to connect to this server
+    "K3S_ADVERTISE_ADDRESS=127.0.0.1"
   ]
 
   ports {

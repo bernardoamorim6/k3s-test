@@ -10,7 +10,7 @@ resource "null_resource" "argocd_namespace" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
       export KUBECONFIG="${path.cwd}/output/kubeconfig.yaml"
-      kubectl create namespace argocd
+      kubectl create namespace argocd || true
     EOT
   }
 

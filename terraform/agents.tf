@@ -3,6 +3,12 @@
 #   • Report status back to the server
 #   • Execute commands from the control plane
 
+
+resource "docker_volume" "k3s_agent_data" {
+  count = var.agent_count
+  name  = "${var.cluster_name}-agent-${count.index}-data"
+}
+
 resource "docker_container" "k3s_agent" {
   count = var.agent_count
 
@@ -27,6 +33,7 @@ resource "docker_container" "k3s_agent" {
   }
 
   volumes {
+    volume_name    = docker_volume.k3s_agent_data[count.index].name
     container_path = "/var/lib/rancher/k3s"
   }
 

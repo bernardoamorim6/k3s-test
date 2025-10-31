@@ -1,3 +1,8 @@
+resource "docker_volume" "k3s_server_data" {
+  count = var.server_count
+  name  = "${var.cluster_name}-server-${count.index}-data"
+}
+
 resource "docker_container" "k3s_server" {
   count = var.server_count
 
@@ -22,7 +27,7 @@ resource "docker_container" "k3s_server" {
     "--disable=traefik",
     # • --tls-san=127.0.0.1 : Adds localhost to the TLS certificate (so we can connect from our machine)
     "--tls-san=127.0.0.1",
-    "--tls-san=172.20.0.0",
+    "--tls-san=172.20.0.10",
     # • --bind-address=0.0.0.0 : Listen on all interfaces
     "--bind-address=0.0.0.0"
   ]
@@ -45,7 +50,8 @@ resource "docker_container" "k3s_server" {
   }
 
   networks_advanced {
-    name = docker_network.k3s_network.name
+    name         = docker_network.k3s_network.name
+    ipv4_address = "172.20.0.10"
   }
 
 
@@ -58,7 +64,9 @@ resource "docker_container" "k3s_server" {
     container_path = "/output"
   }
 
+  # CHANGED: Named volume instead of anonymous
   volumes {
+    volume_name    = docker_volume.k3s_server_data[count.index].name
     container_path = "/var/lib/rancher/k3s"
   }
 

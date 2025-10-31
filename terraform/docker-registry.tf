@@ -2,6 +2,10 @@
 # This acts like a mini Docker Hub running locally
 # Your k3s cluster and Argo Workflows will push/pull images from here
 
+resource "docker_volume" "registry_data" {
+  name = "local-registry-data"
+}
+
 resource "docker_image" "registry" {
   name         = "registry:2"
   keep_locally = false
@@ -25,6 +29,7 @@ resource "docker_container" "registry" {
 
   # Store registry data persistently
   volumes {
+    volume_name    = docker_volume.registry_data.name
     container_path = "/var/lib/registry"
   }
 }
